@@ -8,7 +8,7 @@ import (
 
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
-	"github.com/sjlleo/nexttrace-core/util"
+	"github.com/wujiu2020/nexttrace-core/util"
 	"golang.org/x/net/context"
 	"golang.org/x/net/icmp"
 	"golang.org/x/net/ipv4"

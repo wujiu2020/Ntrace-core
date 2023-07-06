@@ -7,6 +7,8 @@ import (
 	"net"
 	"sync"
 	"time"
+
+	"golang.org/x/net/icmp"
 )
 
 var (
@@ -60,6 +62,7 @@ type Hop struct {
 	TTL      int
 	RTT      time.Duration
 	Error    error
+	RetType  icmp.Type
 }
 
 func NewTracer(config Config) (*TraceInstance, error) {

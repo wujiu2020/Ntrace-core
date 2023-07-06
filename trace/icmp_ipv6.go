@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sjlleo/nexttrace-core/trace/internal"
+	"github.com/wujiu2020/nexttrace-core/trace/internal"
 	"golang.org/x/net/context"
 	"golang.org/x/net/icmp"
 	"golang.org/x/net/ipv6"
@@ -119,7 +119,7 @@ func (t *ICMPTracerv6) listenICMP() {
 						continue
 					}
 					if msg.Peer.String() == t.DestIP.String() {
-						t.handleICMPMessage(msg, 1, rm.Body.(*icmp.Echo).Data, ttl)
+						t.handleICMPMessage(msg, ipv6.ICMPTypeEchoReply, rm.Body.(*icmp.Echo).Data, ttl)
 					}
 				}
 
@@ -142,9 +142,9 @@ func (t *ICMPTracerv6) listenICMP() {
 
 						switch rm.Type {
 						case ipv6.ICMPTypeTimeExceeded:
-							t.handleICMPMessage(msg, 0, rm.Body.(*icmp.TimeExceeded).Data, int(ttl))
+							t.handleICMPMessage(msg, rm.Type, rm.Body.(*icmp.TimeExceeded).Data, int(ttl))
 						case ipv6.ICMPTypeEchoReply:
-							t.handleICMPMessage(msg, 1, rm.Body.(*icmp.Echo).Data, int(ttl))
+							t.handleICMPMessage(msg, rm.Type, rm.Body.(*icmp.Echo).Data, int(ttl))
 						default:
 							// log.Println("received icmp message of unknown type", rm.Type)
 						}
@@ -187,12 +187,13 @@ func (t *ICMPTracerv6) listenICMP() {
 
 }
 
-func (t *ICMPTracerv6) handleICMPMessage(msg ReceivedMessage, icmpType int8, data []byte, ttl int) {
+func (t *ICMPTracerv6) handleICMPMessage(msg ReceivedMessage, icmpType icmp.Type, data []byte, ttl int) {
 	t.inflightRequestRWLock.RLock()
 	defer t.inflightRequestRWLock.RUnlock()
 	if _, ok := t.inflightRequest[ttl]; ok {
 		t.inflightRequest[ttl] <- Hop{
 			Address: msg.Peer,
+			RetType: icmpType,
 		}
 	}
 }

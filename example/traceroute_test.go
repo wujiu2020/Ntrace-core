@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sjlleo/nexttrace-core/trace"
+	"github.com/wujiu2020/nexttrace-core/trace"
 )
 
 func traceroute() {

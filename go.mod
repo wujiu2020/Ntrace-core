@@ -1,4 +1,4 @@
-module github.com/sjlleo/nexttrace-core
+module github.com/wujiu2020/nexttrace-core
 
 go 1.20
 
