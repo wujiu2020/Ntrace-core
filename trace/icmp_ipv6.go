@@ -1,6 +1,7 @@
 package trace
 
 import (
+	"bytes"
 	"encoding/binary"
 	"log"
 	"net"
@@ -82,7 +83,7 @@ func (t *ICMPTracerv6) Execute() (*Result, error) {
 		for i := 0; i < t.NumMeasurements; i++ {
 			t.res.add(Hop{
 				Address: nil,
-				TTL:     30,
+				TTL:     t.MaxHops,
 				RTT:     0,
 				Error:   ErrHopLimitTimeout,
 			})
@@ -209,7 +210,7 @@ func (t *ICMPTracerv6) send(ttl int) error {
 		Type: ipv6.ICMPTypeEchoRequest, Code: 0,
 		Body: &icmp.Echo{
 			ID:   id,
-			Data: []byte("HELLO-R-U-THERE"),
+			Data: bytes.Repeat([]byte{1}, t.PacketSize),
 			Seq:  ttl,
 		},
 	}

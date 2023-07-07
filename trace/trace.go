@@ -35,6 +35,7 @@ type Config struct {
 	DestIP           net.IP
 	DestPort         int
 	Quic             bool
+	PacketSize       int
 	PacketInterval   time.Duration
 	TTLInterval      time.Duration
 }

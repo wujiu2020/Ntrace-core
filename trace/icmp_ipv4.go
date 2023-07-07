@@ -1,6 +1,7 @@
 package trace
 
 import (
+	"bytes"
 	"encoding/binary"
 	"errors"
 	"fmt"
@@ -82,7 +83,7 @@ func (t *ICMPTracer) Execute() (*Result, error) {
 		for i := 0; i < t.NumMeasurements; i++ {
 			t.res.add(Hop{
 				Address: nil,
-				TTL:     30,
+				TTL:     t.MaxHops,
 				RTT:     0,
 				Error:   ErrHopLimitTimeout,
 			})
@@ -144,7 +145,6 @@ func (t *ICMPTracer) listenICMP() {
 			}
 		}
 	}
-
 }
 
 func (t *ICMPTracer) handleICMPMessage(msg ReceivedMessage, icmpType icmp.Type, data []byte, ttl int) {
@@ -224,7 +224,7 @@ func (t *ICMPTracer) send(ttl int) error {
 		Type: ipv4.ICMPTypeEcho, Code: 0,
 		Body: &icmp.Echo{
 			ID:   id,
-			Data: []byte("HELLO-R-U-THERE"),
+			Data: bytes.Repeat([]byte{1}, t.PacketSize),
 			Seq:  ttl,
 		},
 	}
